@@ -1,0 +1,8 @@
+.DS_Store
+.tools/
+.tools-cache/
+.bootstrap/
+node_modules/
+*.zip
+.env
+.env.*

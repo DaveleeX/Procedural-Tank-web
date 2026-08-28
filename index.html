@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Procedural Image to Model</title>
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --panel: #14181e;
+      --line: #2a3140;
+      --text: #e8edf4;
+      --muted: #8b95a5;
+      --accent: #f0c400;
+      --cyan: #5ce1e6;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 "IBM Plex Sans", "Helvetica Neue", sans-serif; }
+    a { color: var(--cyan); }
+    header {
+      padding: 28px 32px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    header p { margin: 8px 0 0; color: var(--muted); max-width: 72ch; }
+    .kicker {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 8px;
+    }
+    h1 { margin: 0; font-size: 28px; font-weight: 650; letter-spacing: -0.02em; }
+    main { padding: 24px 32px 64px; display: grid; gap: 28px; }
+    img.cover {
+      width: 100%;
+      max-width: 1100px;
+      border: 1px solid var(--line);
+      background: #000;
+      display: block;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 16px 18px;
+    }
+    .card h2, section h2 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .card p, .card li { color: var(--muted); }
+    ol.steps { margin: 0; padding-left: 18px; }
+    ol.steps li { margin: 0 0 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    code, pre {
+      font-family: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
+      font-size: 12.5px;
+    }
+    pre {
+      background: #0a0c0f;
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      overflow: auto;
+      color: #d7deea;
+    }
+    .tree { white-space: pre; color: #c5cedb; }
+    a.demo-card {
+      display: block;
+      background: var(--panel);
+      border: 1px solid var(--cyan);
+      padding: 18px 20px;
+      text-decoration: none;
+      max-width: 1100px;
+    }
+    a.demo-card:hover { background: #182130; }
+    a.demo-card strong { color: var(--text); font-size: 15px; letter-spacing: 0.02em; }
+    a.demo-card p { margin: 8px 0 0; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="kicker">Agent skill · local preview</p>
+    <h1>Procedural Image to Model</h1>
+    <p>这不是网页应用，而是一套「一张参考图 → 可编辑程序化 CAD」的 Agent 技能包：用几何体建模，而不是生成网格。下面是本地内容预览。</p>
+  </header>
+  <main>
+    <img class="cover" src="assets/cover.png" alt="Procedural image to CAD workflow cover" />
+
+    <div class="grid">
+      <article class="card">
+        <h2>做什么</h2>
+        <p>根据照片证据分解结构，用原语、拉伸和布尔编写模块化模型，反复渲染对比，直到轮廓、相机、构件数量和身份特征通过质量门，再导出 STL/GLB 并审计。</p>
+      </article>
+      <article class="card">
+        <h2>不做什么</h2>
+        <p>不用 image-to-mesh、NeRF、Gaussian splat、摄影测量或把像素当几何。粗模只作为内部迭代，不能当作最终交付。</p>
+      </article>
+      <article class="card">
+        <h2>怎么用</h2>
+        <p>把本仓库当作 Cursor / Codex / Claude Code skill 安装，或用 <code>scripts/bootstrap.sh</code> 安装本地 CAD 工具链后，对参考图发起一次完整重建。</p>
+      </article>
+    </div>
+
+    <section>
+      <h2>在线示例</h2>
+      <a class="demo-card" href="demo/tank-atlas/index.html">
+        <strong>Armour Atlas · 各国主战坦克程序化蓝图 →</strong>
+        <p>七国标志性坦克（M1A2、豹 2A7、99A、T-90M、挑战者 2、勒克莱尔、虎 I）的可交互三维蓝图：
+          全部构件由参数化几何体现场生成，隐藏线渲染。左侧列表切换车辆，360° 环绕，分解视图与外壳透视
+          可以看内部结构——人工装填、转盘自动装弹与尾舱自动装弹三种方案可直接对照。需要用静态服务器打开。</p>
+      </a>
+    </section>
+
+    <section>
+      <h2>仓库结构</h2>
+      <pre class="tree">procedural-image-to-model/
+  SKILL.md                          Agent 主指令
+  demo/tank-atlas/                  七国坦克程序化蓝图合集
+  agents/openai.yaml                显示名与默认提示
+  assets/cover.png                  封面流程图
+  assets/templates/                 证据与就绪文档模板
+  references/                       工作流、保真度、部署约定
+  scripts/bootstrap.sh              macOS/Linux 引导
+  scripts/bootstrap.ps1             Windows 引导
+  scripts/readiness_gate.py         交付完整性门禁</pre>
+    </section>
+
+    <section>
+      <h2>重建里程碑</h2>
+      <div class="grid">
+        <article class="card"><h2>M0 证据</h2><p>原图入库，列出全部可见构件与不确定项。</p></article>
+        <article class="card"><h2>M1 轮廓</h2><p>锁定体量、地面接触与参考相机。</p></article>
+        <article class="card"><h2>M2–M3 语法</h2><p>开洞、重复体系与可识别结构。</p></article>
+        <article class="card"><h2>M4–M7 细节</h2><p>上下文物体、次要构件、隐藏面与导出审计。</p></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>保真度门禁</h2>
+      <table>
+        <thead>
+          <tr><th>门</th><th>比较什么</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>G1 轮廓</td><td>外轮廓、转角、屋脊、接地</td></tr>
+          <tr><td>G2 相机</td><td>可见面比例、透视、裁切</td></tr>
+          <tr><td>G3 主体</td><td>体块划分、退台、屋顶集群</td></tr>
+          <tr><td>G4 节奏</td><td>层数、窗、阳台、楼梯等计数</td></tr>
+          <tr><td>G5 身份</td><td>让对象可被认出的特征</td></tr>
+          <tr><td>G6–G7</td><td>次要细节与材质呈现</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>本地引导</h2>
+      <pre>chmod +x scripts/bootstrap.sh
+./scripts/bootstrap.sh --target ./procedural-cad --skip-run</pre>
+      <p style="color:var(--muted);margin:10px 0 0;">当前仓库只包含技能与脚本，没有现成的主场景源文件，因此引导脚本需要 <code>--skip-run</code>，或先提供完整 CAD 工程后再跑 live 预览。</p>
+    </section>
+  </main>
+</body>
+</html>
