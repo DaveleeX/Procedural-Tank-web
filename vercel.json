@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/demo/tank-atlas/",
+      "permanent": false
+    },
+    {
+      "source": "/index.html",
+      "destination": "/demo/tank-atlas/",
+      "permanent": false
+    }
+  ]
+}
