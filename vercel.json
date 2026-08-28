@@ -2,14 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
-      "source": "/",
-      "destination": "/demo/tank-atlas/",
-      "permanent": false
+      "source": "/demo/tank-atlas",
+      "destination": "/",
+      "permanent": true
     },
     {
-      "source": "/index.html",
-      "destination": "/demo/tank-atlas/",
-      "permanent": false
+      "source": "/demo/tank-atlas/:path*",
+      "destination": "/:path*",
+      "permanent": true
     }
   ]
 }

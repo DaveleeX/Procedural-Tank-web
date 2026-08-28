@@ -7,7 +7,7 @@ From the repo root:
     python serve.py           # Windows
     py -3 serve.py            # Windows launcher
 
-Then open http://127.0.0.1:8123/demo/tank-atlas/
+Then open http://127.0.0.1:8123/
 
 Do not open index.html via file:// — browsers block ES modules.
 """
@@ -22,7 +22,7 @@ import webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 DEFAULT_PORT = 8123
-ATLAS_PATH = "/demo/tank-atlas/"
+ATLAS_PATH = "/"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 

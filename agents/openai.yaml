@@ -1,8 +1,0 @@
-interface:
-  display_name: "Procedural Image to ForgeCAD"
-  short_description: "One-prompt, quality-gated procedural CAD reconstruction"
-  icon_small: "./assets/cover.png"
-  icon_large: "./assets/cover.png"
-  default_prompt: "Use $forgecad-procedural-image-to-model to autonomously reconstruct the supplied reference images as a high-fidelity procedural ForgeCAD model in one invocation; keep rough passes internal, iterate until all quality gates pass, then deliver audited source, comparisons, and exports."
-policy:
-  allow_implicit_invocation: true
