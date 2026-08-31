@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "alwaysProtected": [
+    "config/acceptance.json",
+    "config/protected-files.json",
+    "references/**",
+    "tests/holdout/**",
+    "tools/evaluator/**",
+    "orchestrator/core/**"
+  ],
+  "phase0Protected": [
+    "src/vehicles/**",
+    "src/geo.js",
+    "src/kit.js",
+    "src/vehicle.js",
+    "src/internals.js",
+    "styles.css",
+    "vercel.json"
+  ],
+  "allowedPhase0Writes": [
+    "package.json",
+    "package-lock.json",
+    "playwright.config.mjs",
+    "tests/**",
+    "tools/baseline/**",
+    "scripts/**",
+    "runs/**",
+    "README.md"
+  ]
+}

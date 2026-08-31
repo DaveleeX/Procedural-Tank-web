@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CursorPhaseReview",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "phase", "summary", "findings", "protectedFilesChanged", "testsSufficient", "confidence"],
+  "properties": {
+    "verdict": { "type": "string", "enum": ["pass", "pass_with_notes", "fail"] },
+    "phase": { "type": "string" },
+    "summary": { "type": "string" },
+    "protectedFilesChanged": { "type": "boolean" },
+    "testsSufficient": { "type": "boolean" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "category", "message", "blocking"],
+        "properties": {
+          "severity": { "type": "string", "enum": ["info", "warning", "critical"] },
+          "category": { "type": "string" },
+          "message": { "type": "string" },
+          "path": { "type": ["string", "null"] },
+          "blocking": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
