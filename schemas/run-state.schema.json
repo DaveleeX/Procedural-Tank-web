@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProceduralTankRunState",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "phase", "state", "branch", "startSha", "headSha", "updatedAt", "details"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "phase": { "type": "string" },
+    "state": {
+      "type": "string",
+      "enum": [
+        "CHECKING_PREREQUISITES",
+        "CODEX_REVISING",
+        "VERIFYING",
+        "CURSOR_FINAL_REVIEW",
+        "CURSOR_REJECTED",
+        "PHASE0_ACCEPTED",
+        "FAILED_INFRASTRUCTURE"
+      ]
+    },
+    "branch": { "type": "string", "minLength": 1 },
+    "startSha": { "type": "string", "minLength": 7 },
+    "headSha": { "type": "string", "minLength": 7 },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "details": { "type": "object" }
+  }
+}
