@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "calibrationStatus": "uncalibrated",
+  "strictVisualThresholdsEnabled": false,
+  "phase0": {
+    "viewport": { "width": 1280, "height": 800, "deviceScaleFactor": 1 },
+    "pageLoadTimeoutMs": 30000,
+    "consoleErrorsMax": 0,
+    "minimumVehicleCount": 7,
+    "requiredVehicleId": "tiger1",
+    "requiredViews": ["3/4 R", "SIDE", "FRONT", "PLAN"],
+    "minimumFpsAfterWarmup": 30,
+    "requiredEvidence": [
+      "default-view.png",
+      "tiger1-side.png",
+      "tiger1-bounds.json",
+      "browser-console.json",
+      "phase0-summary.json"
+    ]
+  },
+  "search": {
+    "population": 32,
+    "eliteCount": 6,
+    "reviewTopK": 3,
+    "maxGenerations": 40,
+    "stagnationGenerations": 5,
+    "minimumImprovement": 0.003,
+    "maxCodeRevisions": 8,
+    "maxFailedCodeRevisions": 3
+  },
+  "futureVisualTargets": {
+    "silhouetteIouMin": 0.88,
+    "boundaryF1Min": 0.9,
+    "landmarkNrmseMax": 0.03,
+    "classicScoreMin": 0.82,
+    "holdoutPassRateMin": 0.9,
+    "consecutivePasses": 2
+  }
+}
