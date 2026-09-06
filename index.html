@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>ARMOUR ATLAS · 各国主战坦克程序化蓝图</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23061726'/%3E%3Cg fill='none' stroke='%238fd8ff' stroke-width='2'%3E%3Crect x='3' y='17' width='26' height='8'/%3E%3Crect x='10' y='10' width='11' height='7'/%3E%3Cpath d='M21 13h9'/%3E%3C/g%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
@@ -16,9 +16,18 @@
 </head>
 <body>
   <div id="app">
-    <canvas id="view"></canvas>
-    <svg id="leaders" aria-hidden="true"></svg>
-    <div id="labels" aria-hidden="true"></div>
+    <section id="model-stage" aria-label="坦克 3D 交互区">
+      <canvas id="view" aria-label="单指旋转坦克，双指缩放与平移"></canvas>
+      <svg id="leaders" aria-hidden="true"></svg>
+      <div id="labels" aria-hidden="true"></div>
+      <p id="viewport-hint">FREE / DRAG TO ORBIT</p>
+    </section>
+    <nav id="mobile-nav" aria-label="模型面板">
+      <button type="button" data-mobile-panel="vehicles" aria-controls="vehicle-panel" aria-expanded="true">坦克</button>
+      <button type="button" data-mobile-panel="controls" aria-controls="controls" aria-expanded="false">操作</button>
+      <button type="button" data-mobile-panel="details" aria-controls="right-col" aria-expanded="false">详情</button>
+      <button type="button" data-mobile-panel="none" aria-label="收起面板，扩大模型视图">收起</button>
+    </nav>
 
     <div id="left-col">
       <header id="masthead">
@@ -99,8 +108,6 @@
         </dl>
       </aside>
     </div>
-
-    <p id="viewport-hint">FREE / DRAG TO ORBIT</p>
 
     <footer id="statusline">
       <span id="status-mode">MODE STATIC</span>
