@@ -42,9 +42,25 @@ export class OrbitRig {
 
   _bind() {
     const dom = this.dom;
+    const touches = new Map();
+    let gesture = null;
+    const measure = () => {
+      const [a, b] = [...touches.values()];
+      return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, distance: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)) };
+    };
+    const pan = (dx, dy) => {
+      const scale = this.distance * 0.0016;
+      const right = new THREE.Vector3().setFromMatrixColumn(this.camera.matrix, 0);
+      const up = new THREE.Vector3().setFromMatrixColumn(this.camera.matrix, 1);
+      this.desiredTarget.addScaledVector(right, -dx * scale).addScaledVector(up, dy * scale);
+      this.desiredTarget.y = clamp(this.desiredTarget.y, -1.5, 5);
+      this.panOffset = this.desiredTarget.distanceTo(new THREE.Vector3(0, 1.25, 0.1));
+    };
     dom.addEventListener('pointerdown', (e) => {
       if (e.button === 1) e.preventDefault();
       dom.setPointerCapture(e.pointerId);
+      touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (touches.size >= 2) gesture = measure();
       this.dragging = true;
       this.panning = e.shiftKey || e.button === 1 || e.button === 2;
       this._pointer.x = e.clientX;
@@ -53,34 +69,46 @@ export class OrbitRig {
       dom.classList.add('grabbing');
     });
     dom.addEventListener('pointermove', (e) => {
-      if (!this.dragging) return;
+      if (!this.dragging || !touches.has(e.pointerId)) return;
+      touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (touches.size >= 2) {
+        const next = measure();
+        if (gesture) {
+          this.desired.distance = clamp(this.desired.distance * gesture.distance / next.distance, this.minDistance, this.maxDistance);
+          pan(next.x - gesture.x, next.y - gesture.y);
+        }
+        gesture = next;
+        this.idle = 0;
+        return;
+      }
       const dx = e.clientX - this._pointer.x;
       const dy = e.clientY - this._pointer.y;
       this._pointer.x = e.clientX;
       this._pointer.y = e.clientY;
       this.idle = 0;
       if (this.panning) {
-        const scale = this.distance * 0.0016;
-        const right = new THREE.Vector3().setFromMatrixColumn(this.camera.matrix, 0);
-        const up = new THREE.Vector3().setFromMatrixColumn(this.camera.matrix, 1);
-        this.desiredTarget.addScaledVector(right, -dx * scale).addScaledVector(up, dy * scale);
-        this.desiredTarget.y = clamp(this.desiredTarget.y, -1.5, 5);
-        this.panOffset = this.desiredTarget.distanceTo(new THREE.Vector3(0, 1.25, 0.1));
+        pan(dx, dy);
       } else {
         this.desired.azimuth -= dx * 0.0062;
         this.desired.polar = clamp(this.desired.polar - dy * 0.005, 0.05, 1.62);
       }
     });
     const release = (e) => {
-      this.dragging = false;
-      this.panning = false;
-      dom.classList.remove('grabbing');
+      touches.delete(e.pointerId);
+      gesture = touches.size >= 2 ? measure() : null;
+      this.dragging = touches.size > 0;
+      if (touches.size === 1) Object.assign(this._pointer, [...touches.values()][0]);
+      if (!this.dragging) {
+        this.panning = false;
+        dom.classList.remove('grabbing');
+      }
       if (e && e.pointerId !== undefined && dom.hasPointerCapture?.(e.pointerId)) {
         dom.releasePointerCapture(e.pointerId);
       }
     };
     dom.addEventListener('pointerup', release);
     dom.addEventListener('pointercancel', release);
+    dom.addEventListener('lostpointercapture', release);
     dom.addEventListener('contextmenu', (e) => e.preventDefault());
     dom.addEventListener(
       'wheel',
