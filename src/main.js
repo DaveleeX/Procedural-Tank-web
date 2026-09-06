@@ -9,6 +9,26 @@ import { resolvePrompt } from './generate/parse.js';
 
 const $ = (sel) => document.querySelector(sel);
 const canvas = $('#view');
+const stage = $('#model-stage');
+const mobileMedia = window.matchMedia('(max-width: 900px), (max-height: 500px) and (pointer: coarse)');
+let mobilePanel = 'vehicles';
+const mobilePanes = { vehicles: $('#vehicle-panel'), controls: $('#controls'), details: $('#right-col') };
+function showMobilePanel(name) {
+  mobilePanel = name;
+  for (const [key, pane] of Object.entries(mobilePanes)) pane.hidden = mobileMedia.matches && key !== name;
+  $('#app').classList.toggle('mobile-tray-closed', name === 'none');
+  document.querySelectorAll('[data-mobile-panel]').forEach(button => {
+    button.setAttribute('aria-expanded', String(name === button.dataset.mobilePanel && name !== 'none'));
+  });
+}
+document.querySelectorAll('[data-mobile-panel]').forEach(button => {
+  button.addEventListener('click', () => showMobilePanel(button.dataset.mobilePanel === mobilePanel ? 'none' : button.dataset.mobilePanel));
+});
+mobileMedia.addEventListener('change', () => {
+  showMobilePanel(mobilePanel);
+  setLeaders(!mobileMedia.matches);
+});
+showMobilePanel(mobilePanel);
 
 let renderer;
 try {
@@ -44,7 +64,7 @@ const state = {
   isolate: null,
   selected: null,
   hover: null,
-  leaders: true,
+  leaders: !mobileMedia.matches,
   frames: 0,
   loading: false,
 };
@@ -261,13 +281,14 @@ function buildSystemIndex(vehicle) {
 
 // ------------------------------------------------------------------- framing
 function viewport() {
+  const rect = canvas.getBoundingClientRect();
   const hidden = document.body.classList.contains('hud-hidden');
-  const free = hidden ? window.innerWidth : $('#right-col').getBoundingClientRect().left - $('#left-col').getBoundingClientRect().right - 48;
+  const free = hidden || mobileMedia.matches ? rect.width : $('#right-col').getBoundingClientRect().left - $('#left-col').getBoundingClientRect().right - 48;
   return {
     fov: FOV,
-    aspect: window.innerWidth / window.innerHeight,
-    band: Math.max(0.35, free / window.innerWidth),
-    margin: 1.1,
+    aspect: rect.width / Math.max(1, rect.height),
+    band: Math.max(0.35, free / Math.max(1, rect.width)),
+    margin: mobileMedia.matches ? 1.18 : 1.1,
   };
 }
 
@@ -278,10 +299,12 @@ function refreshViews() {
 
 /** Region the callout labels may occupy, i.e. the viewport minus the panels. */
 function safeBand() {
+  const rect = canvas.getBoundingClientRect();
+  if (mobileMedia.matches) return { left: 12, right: rect.width - 12, top: 30, bottom: rect.height - 50 };
   const hudHidden = document.body.classList.contains('hud-hidden');
   const left = hudHidden ? 40 : $('#left-col').getBoundingClientRect().right + 22;
   const right = hudHidden ? window.innerWidth - 40 : $('#right-col').getBoundingClientRect().left - 22;
-  return { left, right: Math.max(left + 140, right), top: 56, bottom: window.innerHeight - 86 };
+  return { left, right: Math.max(left + 140, right), top: 56, bottom: rect.height - 86 };
 }
 
 // ------------------------------------------------------------------- view keys
@@ -352,19 +375,29 @@ const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 let pickDirty = false;
 let pressInfo = null;
+const pickPointers = new Set();
+function updatePointer(e) {
+  const rect = canvas.getBoundingClientRect();
+  pointer.set(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
+}
 
 const pickTargets = () =>
   state.vehicle ? [...state.vehicle.parts.filter((p) => p.mesh.visible).map((p) => p.mesh), ...state.vehicle.belts.map((b) => b.mesh)] : [];
 
 canvas.addEventListener('pointermove', (e) => {
-  pointer.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
-  pickDirty = true;
+  updatePointer(e);
+  pickDirty = e.pointerType !== 'touch';
+  if (pressInfo && Math.hypot(e.clientX - pressInfo.x, e.clientY - pressInfo.y) > 6) pressInfo.dragged = true;
 });
 canvas.addEventListener('pointerdown', (e) => {
-  pressInfo = { x: e.clientX, y: e.clientY, t: performance.now() };
+  updatePointer(e);
+  pickPointers.add(e.pointerId);
+  pressInfo = pickPointers.size === 1 ? { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now() } : null;
 });
 canvas.addEventListener('pointerup', (e) => {
-  if (!pressInfo) return;
+  updatePointer(e);
+  pickPointers.delete(e.pointerId);
+  if (!pressInfo || pressInfo.id !== e.pointerId || pressInfo.dragged) { pressInfo = null; return; }
   const moved = Math.hypot(e.clientX - pressInfo.x, e.clientY - pressInfo.y);
   const quick = performance.now() - pressInfo.t < 500;
   pressInfo = null;
@@ -372,6 +405,11 @@ canvas.addEventListener('pointerup', (e) => {
   raycaster.setFromCamera(pointer, camera);
   const hit = raycaster.intersectObjects(pickTargets(), false)[0];
   setSelected(hit ? hit.object.userData.part : null);
+});
+canvas.addEventListener('pointercancel', (e) => { pickPointers.delete(e.pointerId); pressInfo = null; });
+canvas.addEventListener('pointerleave', () => {
+  pickDirty = false;
+  if (state.hover) { state.hover = null; refreshPartStates(); }
 });
 
 function resolveHover() {
@@ -395,6 +433,10 @@ function setSelected(part) {
   $('#sel-cn').textContent = part ? part.cn : '点击模型上的任意构件';
   $('#sel-spec').textContent = part ? part.spec || '' : '';
   $('#sel-note').textContent = part ? `EVIDENCE · ${String(part.note).toUpperCase()}` : '';
+  if (part && mobileMedia.matches) {
+    showMobilePanel('details');
+    $('#right-col').scrollTop = 0;
+  }
   refreshPartStates();
 }
 
@@ -478,16 +520,26 @@ window.addEventListener('keydown', (e) => {
 
 // ---------------------------------------------------------------------- resize
 function resize() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  const rect = stage.getBoundingClientRect();
+  const w = Math.max(1, rect.width);
+  const h = Math.max(1, rect.height);
+  const oldAspect = camera.aspect;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
   $('#leaders').setAttribute('viewBox', `0 0 ${w} ${h}`);
   refreshViews();
+  // Refit at the current orbit direction when the tray or device orientation
+  // changes, retaining the selected assembly and camera target.
+  if (state.vehicle && Math.abs(oldAspect - camera.aspect) > .005) {
+    const bounds = state.isolate ? state.vehicle.assemblyBounds[state.isolate] : state.vehicle.bounds;
+    rig.setView({ distance: fitDistance(bounds, rig.desired, viewport()) });
+  }
 }
 window.addEventListener('resize', resize);
+new ResizeObserver(resize).observe(stage);
 resize();
+setLeaders(state.leaders);
 
 // ------------------------------------------------------------------- main loop
 const tm = {
@@ -542,7 +594,7 @@ function frame(now) {
   resolveHover();
   rig.update(dt);
   renderer.render(scene, camera);
-  if (state.leaders) callouts.update(window.innerWidth, window.innerHeight, safeBand());
+  if (state.leaders) callouts.update(canvas.clientWidth, canvas.clientHeight, safeBand(), mobileMedia.matches ? 2 : Infinity);
 
   telemetryClock += dt;
   if (telemetryClock > 0.1) {
@@ -562,7 +614,7 @@ function frame(now) {
         : state.explode > 0.02
           ? `MODE EXPLODE ${Math.round(state.explode * 100)}%`
           : 'MODE STATIC';
-    tm.hint.textContent = t.auto ? 'AUTO-ORBIT / DRAG TO TAKE OVER' : 'FREE / DRAG TO ORBIT';
+    tm.hint.textContent = mobileMedia.matches ? '单指旋转 · 双指缩放 / 平移 · 轻点部件查看详情' : t.auto ? 'AUTO-ORBIT / DRAG TO TAKE OVER' : 'FREE / DRAG TO ORBIT';
   }
 
   requestAnimationFrame(frame);
