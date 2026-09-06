@@ -26,6 +26,9 @@ html, body {
 }
 
 #app { position: fixed; inset: 0; }
+#model-stage { position: absolute; inset: 0; overflow: hidden; }
+#mobile-nav { display: none; }
+[hidden] { display: none !important; }
 
 /* Drawing sheet: fine grid + coarse grid + a sheet tint that follows the vehicle. */
 #app::before {
@@ -403,4 +406,88 @@ body.hud-hidden #viewport-hint { opacity: 0; pointer-events: none; }
   .brief { display: none; }
   #left-col, #right-col { width: 216px; }
   #masthead h1 { font-size: 22px; }
+}
+
+/* Mobile is a partitioned workspace: the canvas never extends behind a tray. */
+@media (max-width: 900px), (max-height: 500px) and (pointer: coarse) {
+  #app {
+    height: 100%; height: 100dvh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    display: grid;
+    grid-template-areas: 'heading' 'stage' 'nav' 'tray';
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    overflow: hidden;
+  }
+  #model-stage { grid-area: stage; position: relative; inset: auto; min-width: 0; min-height: 0; }
+  #left-col { display: contents; }
+  #masthead {
+    grid-area: heading; position: relative; padding: 10px 16px;
+    background: var(--bg-deep); border-bottom: 1px solid var(--line-soft);
+    max-height: 110px; overflow: auto;
+  }
+  #masthead h1 { font-size: clamp(18px, 5vw, 26px); letter-spacing: .03em; line-height: 1.2; overflow-wrap: anywhere; }
+  #masthead .kicker, #masthead .breadcrumb, #masthead .brief { display: none; }
+  #masthead .subtitle { font-size: 12px; margin-top: 3px; }
+  #mobile-nav {
+    grid-area: nav; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    position: relative; background: var(--bg-deep); border-block: 1px solid var(--line-soft);
+  }
+  #mobile-nav button {
+    min-height: 48px; border: 0; border-right: 1px solid var(--line-faint);
+    background: transparent; color: var(--ink); font: inherit; font-size: 14px; cursor: pointer;
+    touch-action: manipulation;
+  }
+  #mobile-nav button[aria-expanded='true'] { color: var(--accent); background: var(--sheet); box-shadow: inset 0 3px var(--accent); }
+  #vehicle-panel, #controls, #right-col {
+    grid-area: tray; position: relative; inset: auto; width: auto; margin: 0;
+    height: min(30dvh, 260px); min-height: 0; max-height: none;
+    overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    pointer-events: auto; background: var(--bg-deep); border: 0; padding: 12px 16px;
+  }
+  #right-col { display: block; }
+  #right-col .panel { margin-bottom: 12px; }
+  #right-col #system-panel { overflow: visible; }
+  #vehicle-panel { display: block; }
+  #vehicle-list { overflow: visible; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  #vehicle-list li { min-width: 0; min-height: 60px; margin: 0; padding: 8px; grid-template-columns: 22px minmax(0,1fr); }
+  #vehicle-list li .name { font-size: 12px; letter-spacing: 0; overflow-wrap: anywhere; }
+  #vehicle-list li .country { font-size: 12px; letter-spacing: 0; }
+  #vehicle-list li .state { display: none; }
+  #vehicle-list li.compose-slot { position: static; grid-column: 1 / -1; }
+  #vehicle-list li.compose-slot.is-editing { grid-template-columns: 22px minmax(0,1fr) auto; }
+  #vehicle-list li.compose-slot input { min-height: 44px; font-size: 16px; }
+  #vehicle-list li.compose-slot .compose-ok { min-height: 44px; min-width: 44px; font-size: 14px; }
+  .panel h2 { font-size: 12px; letter-spacing: .07em; }
+  #controls .btn { min-height: 44px; padding: 10px 12px; font-size: 14px; letter-spacing: 0; touch-action: manipulation; }
+  #controls .btn-row { gap: 8px; }
+  #controls section + section { margin-top: 16px; }
+  .slider { font-size: 14px; }
+  .slider input { height: 44px; margin: 0; touch-action: pan-y; }
+  .slider input::-webkit-slider-runnable-track { height: 3px; }
+  .slider input::-moz-range-track { height: 3px; }
+  .slider input::-webkit-slider-thumb { width: 24px; height: 24px; margin-top: -10px; border-radius: 50%; }
+  .slider input::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; }
+  #selected-panel .sel-name { font-size: 16px; overflow-wrap: anywhere; }
+  #selected-panel .sel-cn, #selected-panel .sel-spec, #selected-panel .sel-note, #selected-panel .sel-code { font-size: 14px; overflow-wrap: anywhere; }
+  dl { grid-template-columns: minmax(95px, 32%) minmax(0,1fr); }
+  dt, dd { font-size: 12px; overflow-wrap: anywhere; }
+  #system-list li { font-size: 14px; min-height: 44px; align-items: center; }
+  #system-list li span { overflow-wrap: anywhere; }
+  #system-list li .cn { flex-shrink: 0; }
+  #viewport-hint { bottom: 12px; width: calc(100% - 24px); text-align: center; font-size: 12px; letter-spacing: 0; }
+  #statusline { display: none; }
+  .callout { max-width: 135px; white-space: normal; font-size: 12px; letter-spacing: 0; }
+  #boot { font-size: 12px; letter-spacing: .06em; text-align: center; padding: 20px; }
+  button:focus-visible, li:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  body.hud-hidden #masthead, body.hud-hidden .panel { opacity: 1; pointer-events: auto; }
+}
+
+@media (max-height: 500px) and (pointer: coarse) and (orientation: landscape) {
+  #app { grid-template-areas: 'heading nav' 'stage tray'; grid-template-columns: minmax(0,1fr) minmax(260px,36%); grid-template-rows: auto minmax(0,1fr); }
+  #masthead { max-height: 64px; padding: 6px 12px; }
+  #masthead h1 { font-size: 18px; }
+  #masthead .subtitle { display: none; }
+  #vehicle-panel, #controls, #right-col { height: 100%; border-left: 1px solid var(--line-soft); }
+  #app.mobile-tray-closed { grid-template-areas: 'heading nav' 'stage stage'; }
+  #vehicle-list { grid-template-columns: 1fr; }
 }
