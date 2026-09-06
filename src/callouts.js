@@ -50,20 +50,22 @@ export class Callouts {
    * @param {{left:number, right:number, top:number, bottom:number}} safe
    *        band the labels must stay inside, so they never slide under the panels
    */
-  update(width, height, safe) {
+  update(width, height, safe, maxLabels = Infinity) {
     const reach = Math.min(190, (safe.right - safe.left) * 0.22);
     const live = [];
 
+    let visibleCount = 0;
     for (const item of this.items) {
       const { def, part, label, line, dot } = item;
       part.worldAnchor(this._v).project(this.camera);
       const ax = (this._v.x * 0.5 + 0.5) * width;
       const ay = (-this._v.y * 0.5 + 0.5) * height;
-      const hidden = this._v.z > 1 || ax < safe.left - 220 || ax > safe.right + 220;
+      const hidden = visibleCount >= maxLabels || this._v.z > 1 || ax < safe.left - 220 || ax > safe.right + 220;
       label.style.opacity = hidden ? 0 : 1;
       line.style.opacity = hidden ? 0 : 1;
       dot.style.opacity = hidden ? 0 : 1;
       if (hidden) continue;
+      visibleCount++;
 
       const off = def.side === 'left' ? -1 : 1;
       const lw = label.offsetWidth;
