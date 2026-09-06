@@ -49,14 +49,14 @@ const P = {
   turretHeight: 0.8,
   gunAxisY: 1.7,
   gunPivotZ: 1.1,
-  barrelLength: 5.9,
+  barrelLength: 4.8,
 };
 
 const RUNNING = {
   wheelCount: 6,
   wheelFirstZ: 2.3,
   wheelPitch: 0.92,
-  wheelRadius: 0.375,
+  wheelRadius: 0.395,
   wheelWidth: 0.12,
   wheelX: 1.42,
   returnRollers: [1.85, 0.3, -1.4],
@@ -73,12 +73,12 @@ const RUNNING = {
 
 // The V: the turret face comes to a point on the centre line and rakes back.
 const TURRET_OUTLINE = mirrorOutline([
-  [0, 1.42],
-  [0.9, 1.0],
-  [1.32, 0.15],
-  [1.34, -0.95],
-  [1.2, -1.86],
-  [0, -1.95],
+  [0, 1.52], [0.48, 1.48], [1.43, 0.63],
+  [1.48, -0.44], [1.22, -1.86], [0, -1.95],
+]);
+const TURRET_ROOF = mirrorOutline([
+  [0, 1.14], [0.43, 1.1], [1.12, 0.42],
+  [1.25, -0.44], [1.12, -1.8], [0, -1.87],
 ]);
 
 export function build(meta) {
@@ -160,7 +160,7 @@ export function build(meta) {
   // ---------------------------------------------------------------- turret
   b.addTurret({
     tag: 'turret',
-    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, inset: 0.09 }),
+    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, roof: TURRET_ROOF }),
     name: 'V-FRONT WELDED TURRET',
     cn: 'V 型正面焊接炮塔',
     spec: 'Two large frontal plates meeting on the centre line at a sharp angle',
@@ -168,16 +168,21 @@ export function build(meta) {
   });
 
   // Wedge-shaped ERA cassettes tiled over both faces of the V.
-  const eraFace = (sign) =>
-    eraPatch({
-      origin: sign > 0 ? [0.04, P.turretY + 0.08, 1.4] : [-0.92, P.turretY + 0.08, 0.98],
-      u: sign > 0 ? [0.9, 0, -0.44] : [0.88, 0, 0.44],
-      v: [0, 0.64, 0],
-      nu: 3,
-      nv: 3,
-      brick: 0.15,
-      gap: 0.04,
-    });
+  const eraFace = (sign) => {
+    const modules = [];
+    // Separate left/right cheek arrays leave an actual mantlet opening.
+    // Each cassette follows the receding cheek and slopes back towards the roof.
+    for (let column = 0; column < 4; column++) {
+      const x = sign * (0.57 + column * 0.215);
+      const z = 1.51 - column * 0.197;
+      for (let row = 0; row < 2; row++) {
+        modules.push(box(0.26, 0.29, 0.21,
+          [x, P.turretY + 0.24 + row * 0.3, z - row * 0.11],
+          [-0.32, sign * 0.72, 0]));
+      }
+    }
+    return merge(modules);
+  };
   b.addTurret({
     tag: 'era',
     geometry: merge([

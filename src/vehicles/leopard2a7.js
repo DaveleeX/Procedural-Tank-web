@@ -56,7 +56,7 @@ const RUNNING = {
   wheelCount: 7,
   wheelFirstZ: 2.5,
   wheelPitch: 0.8,
-  wheelRadius: 0.35,
+  wheelRadius: 0.365,
   wheelWidth: 0.13,
   wheelX: 1.5,
   returnRollers: [2.1, 0.6, -0.9, -2.3],
@@ -72,12 +72,12 @@ const RUNNING = {
 };
 
 const TURRET_OUTLINE = mirrorOutline([
-  [0, 1.52],
-  [0.95, 1.46],
-  [1.3, 0.92],
-  [1.32, -0.4],
-  [1.32, -2.02],
-  [0, -2.08],
+  [0, 1.52], [0.95, 1.46], [1.43, 0.92],
+  [1.47, -0.4], [1.38, -2.02], [0, -2.08],
+]);
+const TURRET_ROOF = mirrorOutline([
+  [0, 1.27], [0.87, 1.24], [1.28, 0.77],
+  [1.34, -0.4], [1.29, -1.99], [0, -2.04],
 ]);
 
 /**
@@ -85,14 +85,18 @@ const TURRET_OUTLINE = mirrorOutline([
  * is bolted onto it rather than floating in front of it.
  */
 function wedgeHalf(sign, y0, y1) {
-  const outline = [
-    [sign * 0.3, 2.18],
-    [sign * 1.31, 1.1],
-    [sign * 1.33, 0.86],
-    [sign * 0.3, 1.46],
+  // Arrowhead in elevation as well as plan: the leading ridge projects furthest
+  // at mid-height, unlike a vertical extruded block.
+  const ring = (front, outer) => [
+    [sign * 0.36, front], [sign * 1.56, outer],
+    [sign * 1.46, 0.63], [sign * 0.36, 1.34],
   ];
-  const ordered = sign > 0 ? outline : [...outline].reverse();
-  return prismoid(ordered, ordered.map(([x, z]) => [x * 0.97, z]), y0, y1);
+  const ordered = p => sign > 0 ? p : [...p].reverse();
+  const low = ordered(ring(1.77, 0.91));
+  const ridge = ordered(ring(2.24, 1.29));
+  const roof = ordered(ring(1.82, 0.94));
+  const mid = y0 + (y1 - y0) * 0.48;
+  return merge([prismoid(low, ridge, y0, mid), prismoid(ridge, roof, mid, y1)]);
 }
 
 export function build(meta) {
@@ -158,7 +162,7 @@ export function build(meta) {
   // ---------------------------------------------------------------- turret
   b.addTurret({
     tag: 'turret',
-    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, inset: 0.1 }),
+    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, roof: TURRET_ROOF }),
     name: 'WELDED TURRET SHELL',
     cn: '焊接炮塔壳体',
     spec: 'Box turret with a long bustle carrying 15 ready rounds',

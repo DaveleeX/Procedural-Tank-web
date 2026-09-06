@@ -74,13 +74,12 @@ const RUNNING = {
 
 // Rounded front, straight flanks and a squared bustle.
 const TURRET_OUTLINE = mirrorOutline([
-  [0, 1.4],
-  [0.62, 1.32],
-  [1.06, 1.02],
-  [1.28, 0.46],
-  [1.3, -0.5],
-  [1.28, -1.5],
-  [0, -1.58],
+  [0, 1.4], [0.5, 1.38], [1.12, 0.99], [1.31, 0.42],
+  [1.3, -0.5], [1.2, -1.5], [0, -1.58],
+]);
+const TURRET_ROOF = mirrorOutline([
+  [0, 1.03], [0.43, 1.01], [0.92, 0.73], [1.07, 0.34],
+  [1.12, -0.5], [1.08, -1.46], [0, -1.54],
 ]);
 
 export function build(meta) {
@@ -144,9 +143,9 @@ export function build(meta) {
     geometry: merge([
       grille({ x: 0, y: P.engineDeckY + 0.02, z: -2.0, width: 2.0, depth: 0.9, louvres: 7 }),
       grille({ x: 0, y: P.engineDeckY + 0.02, z: -3.0, width: 2.3, depth: 0.8, louvres: 6 }),
-      cyl(0.24, 0.24, 0.55, 16, [1.25, 1.34, -1.6], [0, 0, Math.PI / 2]), // external fuel drums
-      cyl(0.24, 0.24, 0.55, 16, [-1.25, 1.34, -1.6], [0, 0, Math.PI / 2]),
-      box(0.4, 0.3, 0.9, [0, 1.3, -3.35]), // unditching beam
+      cyl(0.24, 0.24, 0.55, 16, [0.83, 0.99, -3.62], [0, 0, Math.PI / 2]), // external fuel drums
+      cyl(0.24, 0.24, 0.55, 16, [-0.83, 0.99, -3.62], [0, 0, Math.PI / 2]),
+      cyl(0.1, 0.1, 2.4, 14, [0, 0.62, -3.59], [0, 0, Math.PI / 2]), // transverse unditching beam
     ]),
     name: 'ENGINE DECK & EXTERNAL FUEL DRUMS',
     cn: '发动机甲板与外挂油桶',
@@ -173,10 +172,10 @@ export function build(meta) {
   // ---------------------------------------------------------------- turret
   b.addTurret({
     tag: 'turret',
-    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, inset: 0.11 }),
-    name: 'DOME-PROFILE TURRET',
-    cn: '穹顶状炮塔',
-    spec: 'Rounded frontal casting profile with a welded bustle',
+    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, roof: TURRET_ROOF }),
+    name: 'LOW WELDED TURRET',
+    cn: '低矮多面焊接炮塔',
+    spec: 'Faceted welded turret with sloped cheeks and a squared rear bustle',
     explode: [0, 1.4, 0],
   });
 
@@ -184,7 +183,7 @@ export function build(meta) {
     tag: 'era',
     geometry: eraAlongOutline({
       outline: TURRET_OUTLINE,
-      indices: [0, 1, 2, 3, 4, 8, 9, 10, 11],
+      indices: [1, 2, 3, 4, 7, 8, 9, 10],
       y0: P.turretY + 0.08,
       height: 0.56,
       rows: 2,
@@ -221,7 +220,7 @@ export function build(meta) {
       box(0.46, 0.34, 0.4, [-0.5, P.turretY + P.turretHeight + 0.16, 0.35]), // commander panoramic sight
       cyl(0.14, 0.14, 0.12, 14, [-0.5, P.turretY + P.turretHeight + 0.36, 0.35]),
       box(0.42, 0.26, 0.4, [0.52, P.turretY + P.turretHeight + 0.02, 0.55]), // Sosna-U gunner sight
-      bothSides(box(0.26, 0.26, 0.26, [1.15, P.turretY + 0.5, 0.75])), // IR jammer boxes
+      bothSides(box(0.1, 0.12, 0.15, [1.1, P.turretY + 0.59, 0.68])), // compact sensor housings; no legacy Shtora eyes
       cyl(0.024, 0.024, 0.6, 8, [1.05, P.turretY + P.turretHeight + 0.45, -1.2]),
     ]),
     name: 'ROOF SIGHTS & HATCHES',

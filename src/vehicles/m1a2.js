@@ -56,7 +56,7 @@ const RUNNING = {
   wheelCount: 7,
   wheelFirstZ: 2.62,
   wheelPitch: 0.87,
-  wheelRadius: 0.32,
+  wheelRadius: 0.355,
   wheelWidth: 0.13,
   wheelX: 1.5,
   returnRollers: [2.2, 0.7, -0.8, -2.2],
@@ -73,12 +73,12 @@ const RUNNING = {
 };
 
 const TURRET_OUTLINE = mirrorOutline([
-  [0, 1.98],
-  [0.66, 1.92],
-  [1.36, 1.06],
-  [1.42, -0.32],
-  [1.42, -1.9],
-  [0, -1.98],
+  [0, 1.98], [0.52, 1.98], [1.53, 0.98],
+  [1.57, -0.32], [1.48, -1.94], [0, -2.04],
+]);
+const TURRET_ROOF = mirrorOutline([
+  [0, 1.48], [0.48, 1.48], [1.34, 0.68],
+  [1.39, -0.32], [1.38, -1.91], [0, -1.99],
 ]);
 
 export function build(meta) {
@@ -125,7 +125,9 @@ export function build(meta) {
   b.addHull({
     geometry: merge([
       box(3.2, 0.9, 0.12, [0, 0.95, -3.97]),
-      grille({ x: 0, y: 0.95, z: -3.94, width: 2.3, depth: 0.5, louvres: 5 }),
+      // Stand the louvers vertically on the rear plate, not flat on the deck.
+      place(grille({ x: 0, y: 0, z: 0, width: 2.7, depth: 0.62, louvres: 10 }),
+        [0, 0.98, -4.05], [Math.PI / 2, 0, 0]),
       bothSides(box(0.16, 0.2, 0.24, [1.3, 0.62, -4.02])),
     ]),
     assembly: 'power',
@@ -171,7 +173,7 @@ export function build(meta) {
 
   // ---------------------------------------------------------------- turret
   b.addTurret({
-    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, inset: 0.12 }),
+    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, roof: TURRET_ROOF }),
     tag: 'turret',
     name: 'ANGULAR TURRET SHELL',
     cn: '棱角炮塔壳体',

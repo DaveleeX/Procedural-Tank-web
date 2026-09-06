@@ -49,14 +49,14 @@ const P = {
   turretHeight: 1.03,
   gunAxisY: 1.98,
   gunPivotZ: 1.35,
-  barrelLength: 5.85,
+  barrelLength: 4.95,
 };
 
 const RUNNING = {
   wheelCount: 6,
   wheelFirstZ: 2.45,
   wheelPitch: 0.95,
-  wheelRadius: 0.4,
+  wheelRadius: 0.415,
   wheelWidth: 0.14,
   wheelX: 1.45,
   returnRollers: [2.0, 0.3, -1.6],
@@ -72,12 +72,12 @@ const RUNNING = {
 };
 
 const TURRET_OUTLINE = mirrorOutline([
-  [0, 1.62],
-  [0.86, 1.54],
-  [1.36, 0.92],
-  [1.4, -0.42],
-  [1.4, -1.86],
-  [0, -1.94],
+  [0, 1.68], [0.65, 1.63], [1.4, 0.85],
+  [1.52, -0.42], [1.45, -1.9], [0, -2.02],
+]);
+const TURRET_ROOF = mirrorOutline([
+  [0, 1.13], [0.57, 1.09], [1.17, 0.59],
+  [1.31, -0.42], [1.31, -1.85], [0, -1.96],
 ]);
 
 export function build(meta) {
@@ -144,7 +144,7 @@ export function build(meta) {
   // ---------------------------------------------------------------- turret
   b.addTurret({
     tag: 'turret',
-    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, inset: 0.09 }),
+    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, roof: TURRET_ROOF }),
     name: 'SLAB-SIDED TURRET',
     cn: '厚重平直炮塔',
     spec: 'Tall vertical flanks — the bulkiest turret in the atlas',
@@ -205,7 +205,14 @@ export function build(meta) {
 
   b.addGun({
     tag: 'barrel',
-    geometry: mainGun({ length: P.barrelLength, radius: 0.08, breechRadius: 0.15, thermalSleeve: true }),
+    geometry: merge([
+      mainGun({ length: P.barrelLength, radius: 0.08, breechRadius: 0.15, thermalSleeve: true }),
+      // Thermal-jacket sections and the enlarged bore evacuator remain on the
+      // existing gun parent, so elevation and explosion pivot are unchanged.
+      cyl(0.17, 0.17, 0.62, 24, [0, 0, 2.2], [Math.PI / 2, 0, 0]),
+      ...[0.7, 1.5, 2.55, 3.4, 4.2].map(z =>
+        cyl(0.133, 0.133, 0.045, 24, [0, 0, z], [Math.PI / 2, 0, 0])),
+    ]),
     name: 'L30A1 120 MM RIFLED GUN',
     cn: 'L30A1 型 120 毫米线膛炮',
     spec: 'Full-length thermal sleeve, muzzle reference mirror, bagged charges',

@@ -54,7 +54,7 @@ const RUNNING = {
   wheelCount: 6,
   wheelFirstZ: 2.1,
   wheelPitch: 0.85,
-  wheelRadius: 0.35,
+  wheelRadius: 0.355,
   wheelWidth: 0.12,
   wheelX: 1.42,
   returnRollers: [1.75, 0.4, -0.9, -2.1],
@@ -71,12 +71,12 @@ const RUNNING = {
 
 // Small crew compartment, then a full-width squared bustle for the autoloader.
 const TURRET_OUTLINE = mirrorOutline([
-  [0, 1.34],
-  [0.72, 1.24],
-  [1.16, 0.66],
-  [1.18, -0.28],
-  [1.2, -1.72],
-  [0, -1.78],
+  [0, 1.4], [0.52, 1.37], [1.2, 0.66],
+  [1.25, -0.28], [1.24, -1.78], [0, -1.85],
+]);
+const TURRET_ROOF = mirrorOutline([
+  [0, 1.01], [0.48, 1.0], [1.0, 0.43],
+  [1.08, -0.28], [1.14, -1.72], [0, -1.8],
 ]);
 
 export function build(meta) {
@@ -149,7 +149,14 @@ export function build(meta) {
   // ---------------------------------------------------------------- turret
   b.addTurret({
     tag: 'turret',
-    geometry: turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, inset: 0.07 }),
+    geometry: merge([
+      turretShell({ outline: TURRET_OUTLINE, y0: P.turretY, height: P.turretHeight, roof: TURRET_ROOF }),
+      // Broad, smooth cheek modules, not the small ERA tiles of the T-90/99A.
+      ...[-1, 1].flatMap(sign => [0, 1, 2].map(i =>
+        box(0.26, 0.57, 0.065,
+          [sign * (0.59 + i * 0.21), P.turretY + 0.43, 1.25 - i * 0.22],
+          [-0.39, sign * 0.75, 0]))),
+    ]),
     name: 'ULTRA-COMPACT TURRET',
     cn: '超紧凑炮塔',
     spec: 'No loader station: the crew volume is roughly half an Abrams turret',
