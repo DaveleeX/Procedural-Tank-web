@@ -1,0 +1,263 @@
+{
+  "direct_baked": false,
+  "ao_separate": true,
+  "scenarios": [
+    "day",
+    "night"
+  ],
+  "atlases": [
+    {
+      "mesh": "00_promenade_main",
+      "resolution": 2048,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.783,
+      "polygons": 392,
+      "objects": 4,
+      "day_indirect_peak": 0.3224053680896759,
+      "night_indirect_peak": 0.20650756359100342,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "00_promenade_main_day.webp",
+        "night": "00_promenade_main_night.webp",
+        "orm": "00_promenade_main_orm.webp",
+        "hdAlbedo": "00_promenade_main_albedo_hd.webp",
+        "hdDay": "00_promenade_main_day_hd.webp",
+        "hdNight": "00_promenade_main_night_hd.webp",
+        "hdOrm": "00_promenade_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "00_architecture_main",
+      "resolution": 2048,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.6867,
+      "polygons": 2845,
+      "objects": 32,
+      "day_indirect_peak": 0.34084054827690125,
+      "night_indirect_peak": 0.47838935256004333,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "00_architecture_main_day.webp",
+        "night": "00_architecture_main_night.webp",
+        "orm": "00_architecture_main_orm.webp",
+        "hdAlbedo": "00_architecture_main_albedo_hd.webp",
+        "hdDay": "00_architecture_main_day_hd.webp",
+        "hdNight": "00_architecture_main_night_hd.webp",
+        "hdOrm": "00_architecture_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "01_hall_main",
+      "resolution": 2048,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.7931,
+      "polygons": 652,
+      "objects": 8,
+      "day_indirect_peak": 0.2999463975429535,
+      "night_indirect_peak": 0.308439701795578,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "01_hall_main_day.webp",
+        "night": "01_hall_main_night.webp",
+        "orm": "01_hall_main_orm.webp",
+        "hdAlbedo": "01_hall_main_albedo_hd.webp",
+        "hdDay": "01_hall_main_day_hd.webp",
+        "hdNight": "01_hall_main_night_hd.webp",
+        "hdOrm": "01_hall_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "01_tank_main",
+      "resolution": 4096,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.6371,
+      "polygons": 4280,
+      "objects": 78,
+      "day_indirect_peak": 0.2460154891014099,
+      "night_indirect_peak": 0.8550616502761841,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "01_tank_main_day.webp",
+        "night": "01_tank_main_night.webp",
+        "orm": "01_tank_main_orm.webp",
+        "hdAlbedo": "01_tank_main_albedo_hd.webp",
+        "hdDay": "01_tank_main_day_hd.webp",
+        "hdNight": "01_tank_main_night_hd.webp",
+        "hdOrm": "01_tank_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "02_hall_main",
+      "resolution": 2048,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.8185,
+      "polygons": 890,
+      "objects": 7,
+      "day_indirect_peak": 0.2714594602584839,
+      "night_indirect_peak": 0.397979736328125,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "02_hall_main_day.webp",
+        "night": "02_hall_main_night.webp",
+        "orm": "02_hall_main_orm.webp",
+        "hdAlbedo": "02_hall_main_albedo_hd.webp",
+        "hdDay": "02_hall_main_day_hd.webp",
+        "hdNight": "02_hall_main_night_hd.webp",
+        "hdOrm": "02_hall_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "02_tank_main",
+      "resolution": 4096,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.5763,
+      "polygons": 11254,
+      "objects": 120,
+      "day_indirect_peak": 0.3757556676864624,
+      "night_indirect_peak": 0.9720982909202576,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "02_tank_main_day.webp",
+        "night": "02_tank_main_night.webp",
+        "orm": "02_tank_main_orm.webp",
+        "hdAlbedo": "02_tank_main_albedo_hd.webp",
+        "hdDay": "02_tank_main_day_hd.webp",
+        "hdNight": "02_tank_main_night_hd.webp",
+        "hdOrm": "02_tank_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "03_hall_main",
+      "resolution": 4096,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.8134,
+      "polygons": 969,
+      "objects": 14,
+      "day_indirect_peak": 0.2530072033405304,
+      "night_indirect_peak": 0.3275611996650696,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "03_hall_main_day.webp",
+        "night": "03_hall_main_night.webp",
+        "orm": "03_hall_main_orm.webp",
+        "hdAlbedo": "03_hall_main_albedo_hd.webp",
+        "hdDay": "03_hall_main_day_hd.webp",
+        "hdNight": "03_hall_main_night_hd.webp",
+        "hdOrm": "03_hall_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "03_tank_main",
+      "resolution": 4096,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.5389,
+      "polygons": 6232,
+      "objects": 96,
+      "day_indirect_peak": 0.28114053606987,
+      "night_indirect_peak": 0.9034757018089294,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "03_tank_main_day.webp",
+        "night": "03_tank_main_night.webp",
+        "orm": "03_tank_main_orm.webp",
+        "hdAlbedo": "03_tank_main_albedo_hd.webp",
+        "hdDay": "03_tank_main_day_hd.webp",
+        "hdNight": "03_tank_main_night_hd.webp",
+        "hdOrm": "03_tank_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "04_hall_main",
+      "resolution": 2048,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.8389,
+      "polygons": 2388,
+      "objects": 23,
+      "day_indirect_peak": 0.255277544260025,
+      "night_indirect_peak": 0.367639422416687,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "04_hall_main_day.webp",
+        "night": "04_hall_main_night.webp",
+        "orm": "04_hall_main_orm.webp",
+        "hdAlbedo": "04_hall_main_albedo_hd.webp",
+        "hdDay": "04_hall_main_day_hd.webp",
+        "hdNight": "04_hall_main_night_hd.webp",
+        "hdOrm": "04_hall_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "04_tank_main",
+      "resolution": 4096,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.6161,
+      "polygons": 12212,
+      "objects": 111,
+      "day_indirect_peak": 0.4227297306060791,
+      "night_indirect_peak": 1.1330125331878662,
+      "day_scale": 1,
+      "night_scale": 2,
+      "files": {
+        "day": "04_tank_main_day.webp",
+        "night": "04_tank_main_night.webp",
+        "orm": "04_tank_main_orm.webp",
+        "hdAlbedo": "04_tank_main_albedo_hd.webp",
+        "hdDay": "04_tank_main_day_hd.webp",
+        "hdNight": "04_tank_main_night_hd.webp",
+        "hdOrm": "04_tank_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "05_hall_main",
+      "resolution": 4096,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.8581,
+      "polygons": 1040,
+      "objects": 16,
+      "day_indirect_peak": 0.32062292098999023,
+      "night_indirect_peak": 0.954929769039154,
+      "day_scale": 1,
+      "night_scale": 1,
+      "files": {
+        "day": "05_hall_main_day.webp",
+        "night": "05_hall_main_night.webp",
+        "orm": "05_hall_main_orm.webp",
+        "hdAlbedo": "05_hall_main_albedo_hd.webp",
+        "hdDay": "05_hall_main_day_hd.webp",
+        "hdNight": "05_hall_main_night_hd.webp",
+        "hdOrm": "05_hall_main_orm_hd.webp"
+      }
+    },
+    {
+      "mesh": "05_tank_main",
+      "resolution": 4096,
+      "gi_resolution": 2048,
+      "uv_utilization": 0.5712,
+      "polygons": 9264,
+      "objects": 124,
+      "day_indirect_peak": 0.3622671365737915,
+      "night_indirect_peak": 1.3799898624420166,
+      "day_scale": 1,
+      "night_scale": 2,
+      "files": {
+        "day": "05_tank_main_day.webp",
+        "night": "05_tank_main_night.webp",
+        "orm": "05_tank_main_orm.webp",
+        "hdAlbedo": "05_tank_main_albedo_hd.webp",
+        "hdDay": "05_tank_main_day_hd.webp",
+        "hdNight": "05_tank_main_night_hd.webp",
+        "hdOrm": "05_tank_main_orm_hd.webp"
+      }
+    }
+  ],
+  "excludedCount": 5981
+}

@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import * as THREE from 'three';
+import {createDayNightRig} from '../lib/museum-lighting.ts';
+const scene=new THREE.Scene();let exposure=0;const rig=createDayNightRig(scene,n=>exposure=n);
+const model=new THREE.Group(),material=new THREE.MeshStandardMaterial();const glow=new THREE.Mesh(new THREE.BoxGeometry(),material);glow.name='05_glow';model.add(glow);rig.registerModel(model);
+const sun=scene.children.find(o=>o instanceof THREE.DirectionalLight&&o.intensity>1);
+const spots=scene.children.filter(o=>o instanceof THREE.SpotLight);
+assert.equal(spots.length,5);assert.equal(sun.intensity,2.7);assert(spots.every(s=>s.intensity===0));
+rig.setNight(true);const first=rig.update(1/60);assert(first>0&&first<1);
+for(let i=0;i<300;i++)rig.update(1/60);
+assert.equal(sun.intensity,0);assert.equal(sun.castShadow,false);assert(spots.every(s=>s.intensity===75&&s.castShadow));assert(material.emissiveIntensity>4);assert.equal(exposure,1.12);
+const shader={fragmentShader:'#include <emissivemap_fragment>'};material.onBeforeCompile(shader);assert(shader.fragmentShader.includes('vColor.rgb'));
+rig.setNight(false);for(let i=0;i<300;i++)rig.update(1/60);
+assert.equal(sun.intensity,2.7);assert(spots.every(s=>s.intensity===0&&!s.castShadow));assert(material.emissiveIntensity<.05);rig.dispose();assert.equal(scene.children.length,0);glow.geometry.dispose();material.dispose();
+const report={daySun:2.7,nightSun:0,nightSpotlights:5,emissiveSurfaces:true,coloredEmission:true,smoothTransition:true,roundTrip:true};fs.writeFileSync('day-night-verification.json',JSON.stringify(report,null,2));console.log(report);
