@@ -1,6 +1,6 @@
-/** Production loads museum binaries from GitHub via jsDelivr so Vercel can build the app without uploading 70MB of glTF assets. */
+/** Production loads museum binaries from GitHub so Vercel can build without uploading 70MB of glTF assets. */
 export const museumPublic = import.meta.env.PROD
-  ? 'https://cdn.jsdelivr.net/gh/DaveleeX/tank-museum@main/public'
+  ? 'https://raw.githubusercontent.com/DaveleeX/tank-museum/main/public'
   : '';
 
 export function museumAsset(path: string): string {
