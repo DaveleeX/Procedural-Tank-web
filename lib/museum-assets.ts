@@ -1,7 +1,5 @@
-/** Production loads museum binaries from GitHub so Vercel can build without uploading 70MB of glTF assets. */
-export const museumPublic = import.meta.env.PROD
-  ? 'https://raw.githubusercontent.com/DaveleeX/tank-museum/main/public'
-  : '';
+/** Keep museum assets same-origin so the 3D scene does not depend on GitHub raw CDN. */
+export const museumPublic = '';
 
 export function museumAsset(path: string): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;

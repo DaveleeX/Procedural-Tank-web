@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "npx vite build && rm -rf .vercel/output/static/museum",
+  "buildCommand": "npx vite build",
   "installCommand": "npm ci"
 }
