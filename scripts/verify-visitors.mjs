@@ -5,6 +5,8 @@ import {createVisitors} from '../lib/museum-visitors.ts';
 const scene=new THREE.Scene();const controller=createVisitors(scene);
 const people=scene.getObjectByName('Dynamic museum visitors').children;
 assert.equal(people.length,3);
+for(const delta of [-.01,NaN,Infinity,-Infinity])controller.update(delta);
+assert(people.every(p=>p.position.toArray().every(Number.isFinite)));
 const initial=people.map(p=>p.position.clone());let maxSwing=0,maxX=0,minZ=Infinity,maxZ=-Infinity;
 for(let frame=0;frame<60*180;frame++){
  controller.update(1/60);

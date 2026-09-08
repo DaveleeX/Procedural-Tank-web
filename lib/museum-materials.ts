@@ -1,12 +1,11 @@
 import * as THREE from 'three';
-import { museumAsset } from './museum-assets';
 type Atlas={mesh:string;day_scale?:number;night_scale?:number;files:{day:string;night:string;orm:string;hdAlbedo:string;hdDay:string;hdNight:string;hdOrm:string}};
 type SetMaps={day:THREE.Texture;night:THREE.Texture;orm:THREE.Texture;albedo:THREE.Texture|null};
 export async function bindMuseumMaterials(model:THREE.Object3D,renderer:THREE.WebGLRenderer,signal:AbortSignal){
- const data=await fetch(museumAsset('/museum/model-hybrid/lighting.json'),{signal}).then(r=>{if(!r.ok)throw Error('Lighting manifest unavailable');return r.json()}) as {atlases:Atlas[]};
+ const data=await fetch('/museum/model-hybrid/lighting.json',{signal}).then(r=>{if(!r.ok)throw Error('Lighting manifest unavailable');return r.json()}) as {atlases:Atlas[]};
  const loader=new THREE.TextureLoader(),mix={value:0};const owned=new Set<THREE.Texture>();let disposed=false,selection=-1,epoch=0;
  async function texture(path:string,color:boolean){
-  const t=await loader.loadAsync(museumAsset('/museum/model-hybrid/'+path));t.flipY=false;t.channel=0;t.colorSpace=color?THREE.SRGBColorSpace:THREE.NoColorSpace;t.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());
+  const t=await loader.loadAsync('/museum/model-hybrid/'+path);t.flipY=false;t.channel=0;t.colorSpace=color?THREE.SRGBColorSpace:THREE.NoColorSpace;t.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());
   if(disposed){t.dispose();throw Error('Material loading cancelled')}owned.add(t);return t;
  }
  const bindings: {row:Atlas;m:THREE.MeshStandardMaterial;low:SetMaps;high:SetMaps|null;nightUniform:{value:THREE.Texture}}[]=[];

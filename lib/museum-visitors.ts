@@ -36,7 +36,8 @@ export function createVisitors(scene: THREE.Scene) {
  });
  let elapsed=0;
  function update(dt:number){
-  elapsed+=dt;
+  // A first RAF timestamp may precede setup completion; ignore invalid deltas.
+  elapsed+=Number.isFinite(dt)?Math.max(0,dt):0;
   for(const person of visitors){
    const distance=elapsed*person.speed;
    const t=(person.offset+distance/length)%1;

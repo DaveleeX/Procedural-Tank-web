@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import type { MuseumController } from '@/lib/museum-engine';
 import { ArrowUpRight, Layers3, Maximize, RotateCcw, Play, Pause, Footprints, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { museumAsset } from '@/lib/museum-assets';
 const galleries = [
  {id:'01',name:'方炮塔坦克',theme:'历史花园',image:'heritage',color:'#c8b47e'},
  {id:'02',name:'Challenger 2',theme:'荒漠巡游',image:'desert',color:'#d9ac74'},
@@ -25,7 +24,7 @@ export default function Home(){
  const fullscreen=()=>{if(document.fullscreenElement)document.exitFullscreen?.().catch(()=>{});else document.documentElement.requestFullscreen?.().catch(()=>{})};
  return <main className="museum-shell" data-time={night?'night':'day'}>
   <header className="masthead"><div className="brand"><Layers3 size={25}/><div><span className="eyebrow">THE MINIATURE COLLECTION</span><h1>微缩坦克博物馆<span> / 05</span></h1></div></div><div className="header-meta"><span className="live-dot"/>五个场景 · 一座博物馆</div></header>
-   <section className="museum-stage" aria-label="坦克博物馆三维展览"><img className="museum-poster" src={museumAsset('/museum/'+(ready?'overview':gallery?.image||'overview')+'.png')} alt={gallery?gallery.name+'主题展区':'五台坦克及独立场景的博物馆总览'}/>
+  <section className="museum-stage" aria-label="坦克博物馆三维展览"><img className="museum-poster" src={'/museum/'+(ready?'overview':gallery?.image||'overview')+'.png'} alt={gallery?gallery.name+'主题展区':'五台坦克及独立场景的博物馆总览'}/>
    <div className="webgl-surface" ref={stage} style={{opacity:ready?1:0}}/><div className="view-caption"><span className="eyebrow">{gallery?'GALLERY '+gallery.id:'MUSEUM OVERVIEW'}</span><h2>{gallery?.theme||'把世界，收藏在这里。'}</h2><p>{gallery?.name||'沿着中央步道，探索五个微缩世界。'}</p></div>
    <div className="view-toolbar"><Button className="tool-button" disabled={!ready} aria-pressed={night} onClick={()=>{const next=!night;setNight(next);engine.current?.night(next)}}>{night?<Sun/>:<Moon/>}{night?'切换白天':'切换夜间'}</Button><Button className="tool-button" onClick={()=>choose(-1)}><RotateCcw/>全馆视角</Button><Button className="tool-button" disabled={!ready} onClick={()=>engine.current?.tour(mode!=='tour')}>{mode==='tour'?<Pause/>:<Play/>}{mode==='tour'?'暂停导览':'自动导览'}</Button><Button className="tool-button" disabled={!ready} onClick={()=>engine.current?.walk()} aria-pressed={mode==='walk'}><Footprints/>步入馆内</Button><Button className="tool-button" onClick={fullscreen} aria-label="全屏查看"><Maximize/></Button></div>
    <div className="stage-note">{ready?(mode==='walk'?'拖动转向 · WASD / 箭头移动 · Esc 退出':mode==='tour'?'60 秒导览 · 沿中央步道参观五个展区':<><span className="desktop-hint">拖动旋转 · 滚轮缩放 · 点击坦克走近观看</span><span className="mobile-hint">单指旋转 · 双指缩放</span></>):'原作视角 · 五座独立主题展区'}</div>
